@@ -31,6 +31,7 @@
 
         <tb:TaskbarIcon
             IconSource="Assets/Monogram.ico"
-            ToolTipText="Greymind Eye" />
+            ToolTipText="Greymind Eye"
+            />
     </Grid>
 </controls:MetroWindow>
