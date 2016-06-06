@@ -6,9 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:Greymind.Eye"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
     mc:Ignorable="d"
     Title="Greymind Eye"
-    Height="77.778" Width="307.87">
+    Height="77.778" Width="307.87"
+    ShowInTaskbar="{Binding ShowInTaskbar}">
 
     <Grid>
         <WrapPanel Margin="10,10,10,10" Orientation="Horizontal">
@@ -17,5 +19,9 @@
             <TextBox x:Name="Interval"></TextBox>
             <Label Content="minutes" />
         </WrapPanel>
+
+        <tb:TaskbarIcon
+            IconSource="Assets/Monogram.ico"
+            ToolTipText="Greymind Eye" />
     </Grid>
 </controls:MetroWindow>

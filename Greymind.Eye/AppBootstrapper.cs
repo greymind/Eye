@@ -20,6 +20,7 @@ namespace Greymind.Eye
             this.container.Singleton<IWindowManager, WindowManager>();
             this.container.Singleton<IEventAggregator, EventAggregator>();
             this.container.PerRequest<IShell, ShellViewModel>();
+            this.container.PerRequest<IShellView, ShellView>();
         }
 
         protected override object GetInstance(Type service, string key)

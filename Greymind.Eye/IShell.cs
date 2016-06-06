@@ -1,4 +1,6 @@
 namespace Greymind.Eye
 {
-    public interface IShell { }
+    public interface IShell
+    {
+    }
 }

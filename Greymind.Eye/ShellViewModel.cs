@@ -1,18 +1,22 @@
+using Caliburn.Micro;
 using System;
 using System.Threading;
 using System.Windows;
 
 namespace Greymind.Eye
 {
-    public class ShellViewModel : Caliburn.Micro.PropertyChangedBase, IShell
+    public class ShellViewModel : PropertyChangedBase, IShell, IViewAware
     {
         private const int SnoozeIntervalInMinutes = 5;
         private const string SnoozeState = "Snooze";
+
+        private IShellView shellView;
 
         private Timer timer;
 
         private bool isEnabled;
         private string interval;
+        private bool showInTaskbar;
 
         public bool IsEnabled
         {
@@ -37,9 +41,23 @@ namespace Greymind.Eye
             }
         }
 
+        public bool ShowInTaskbar
+        {
+            get
+            {
+                return this.showInTaskbar;
+            }
+            set
+            {
+                this.showInTaskbar = value;
+                NotifyOfPropertyChange(nameof(ShowInTaskbar));
+            }
+        }
+
         public ShellViewModel()
         {
             Interval = "20";
+            ShowInTaskbar = false;
         }
 
         private void StartTimerWithUserInterval()
@@ -67,6 +85,8 @@ namespace Greymind.Eye
 
             StopTimer();
 
+            this.shellView.BringFocusToWindow();
+
             var result = MessageBox.Show
                 (
                     messageBoxText: isSnooze ? "Snooze time is up!" : "Time to take a break!",
@@ -92,5 +112,17 @@ namespace Greymind.Eye
         {
             StartTimer(SnoozeIntervalInMinutes, SnoozeState);
         }
+
+        public void AttachView(object view, object context = null)
+        {
+            this.shellView = (IShellView)view;
+        }
+
+        public object GetView(object context = null)
+        {
+            return this.shellView;
+        }
+
+        public event EventHandler<ViewAttachedEventArgs> ViewAttached;
     }
 }
