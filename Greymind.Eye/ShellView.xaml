@@ -9,16 +9,25 @@
     xmlns:tb="http://www.hardcodet.net/taskbar"
     mc:Ignorable="d"
     Title="Greymind Eye"
-    Height="77.778" Width="307.87"
+    Height="135" Width="200"
     ShowInTaskbar="{Binding ShowInTaskbar}">
 
     <Grid>
-        <WrapPanel Margin="10,10,10,10" Orientation="Horizontal">
-            <ToggleButton x:Name="IsEnabled" Content="Enable" />
-            <Label Content="Remind me every" />
-            <TextBox x:Name="Interval"></TextBox>
-            <Label Content="minutes" />
-        </WrapPanel>
+        <StackPanel Margin="10,10,10,10" Orientation="Vertical">
+            <WrapPanel Orientation="Horizontal">
+                <Label Content="Remind me every" />
+                <TextBox x:Name="Interval"></TextBox>
+                <Label Content="minutes" />
+            </WrapPanel>
+            <WrapPanel Orientation="Horizontal">
+                <Label Content="Snooze for" />
+                <TextBox x:Name="SnoozeInterval"></TextBox>
+                <Label Content="minutes" />
+            </WrapPanel>
+            <WrapPanel Orientation="Horizontal" Margin="5,5,0,0">
+                <ToggleButton x:Name="IsEnabled" Content="Enable" />
+            </WrapPanel>
+        </StackPanel>
 
         <tb:TaskbarIcon
             IconSource="Assets/Monogram.ico"

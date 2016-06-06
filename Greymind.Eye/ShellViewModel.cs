@@ -7,8 +7,11 @@ namespace Greymind.Eye
 {
     public class ShellViewModel : PropertyChangedBase, IShell, IViewAware
     {
-        private const int SnoozeIntervalInMinutes = 5;
-        private const string SnoozeState = "Snooze";
+        private enum State
+        {
+            Regular,
+            Snooze
+        }
 
         private IShellView shellView;
 
@@ -16,6 +19,7 @@ namespace Greymind.Eye
 
         private bool isEnabled;
         private string interval;
+        private string snoozeInterval;
         private bool showInTaskbar;
 
         public bool IsEnabled
@@ -26,7 +30,7 @@ namespace Greymind.Eye
                 this.isEnabled = value;
                 NotifyOfPropertyChange(nameof(IsEnabled));
 
-                if (IsEnabled) StartTimerWithUserInterval();
+                if (IsEnabled) StartTimer(Interval, State.Regular);
                 else StopTimer();
             }
         }
@@ -38,6 +42,16 @@ namespace Greymind.Eye
             {
                 this.interval = value;
                 NotifyOfPropertyChange(nameof(Interval));
+            }
+        }
+
+        public string SnoozeInterval
+        {
+            get { return this.snoozeInterval; }
+            set
+            {
+                this.snoozeInterval = value;
+                NotifyOfPropertyChange(nameof(SnoozeInterval));
             }
         }
 
@@ -57,19 +71,20 @@ namespace Greymind.Eye
         public ShellViewModel()
         {
             Interval = "20";
+            SnoozeInterval = "3";
             ShowInTaskbar = false;
         }
 
-        private void StartTimerWithUserInterval()
+        private void StartTimer(string intervalInMinutesAsString, State state)
         {
             int intervalInMinutes;
-            if (int.TryParse(Interval, out intervalInMinutes))
+            if (int.TryParse(intervalInMinutesAsString, out intervalInMinutes))
             {
-                StartTimer(intervalInMinutes, string.Empty);
+                StartTimer(intervalInMinutes, state);
             }
         }
 
-        private void StartTimer(int intervalInMinutes, string state)
+        private void StartTimer(int intervalInMinutes, State state)
         {
             this.timer = new Timer(TimerElapsed, state, TimeSpan.FromMinutes(intervalInMinutes), TimeSpan.Zero);
         }
@@ -81,7 +96,7 @@ namespace Greymind.Eye
 
         private void TimerElapsed(object state)
         {
-            var isSnooze = (string)state == SnoozeState;
+            var isSnooze = (State)state == State.Snooze;
 
             StopTimer();
 
@@ -99,18 +114,13 @@ namespace Greymind.Eye
             switch (result)
             {
                 case MessageBoxResult.OK:
-                    StartTimerWithUserInterval();
+                    StartTimer(Interval, State.Regular);
                     break;
 
                 case MessageBoxResult.Cancel:
-                    StartSnoozeTimer();
+                    StartTimer(SnoozeInterval, State.Snooze);
                     break;
             }
-        }
-
-        private void StartSnoozeTimer()
-        {
-            StartTimer(SnoozeIntervalInMinutes, SnoozeState);
         }
 
         public void AttachView(object view, object context = null)
